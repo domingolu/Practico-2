@@ -2,8 +2,9 @@
 ### Materia:  Sistemas de Control 2024 FCEFyN-UNC
 ### Grupo: CBD
 #### Integrantes
-    GONZALEZ, BRUNO				    43134492	I.Electrónica	
-    GARCÍA, ANGEL DOMINGO			32797989	I.Comp.				https://github.com/domingolu/Practico-2
+* GONZALEZ, BRUNO		43134492	I.Electrónica	[Github] 
+* GARCÍA, ANGEL DOMINGO		32797989	I.Comp.		https://github.com/domingolu/Practico-2
+
 ## Table of Contents
 - [Introducción](#introducción)
 - [Implementación](#implementación)
@@ -75,8 +76,8 @@ def  obtener_indice_gini(pais)
 <a name="Results"></a>
 ## Results
 
-![](graps.png)
-![Ejemplo de gráfico para los países Argentina y Bolivia](graphs_int.png)
+![Ejemplo de gráfico para los países Argentina y Bolivia](graphs.png)
+![Ejemplo de gráfico para los países Argentina y Bolivia con valores Int](graphs_int.png)
 
 <a name="future-work"></a>
 ## Future Work
