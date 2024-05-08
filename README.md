@@ -2,7 +2,7 @@
 ### Materia:  Sistemas de Control 2024 FCEFyN-UNC
 ### Grupo: CBD
 #### Integrantes
-* GONZALEZ, BRUNO		43134492	I.Electrónica	[Github] 
+* GONZALEZ, BRUNO		43134492	I.Electrónica	fork  
 * GARCÍA, ANGEL DOMINGO		32797989	I.Comp.		https://github.com/domingolu/Practico-2
 
 ## Table of Contents
@@ -13,38 +13,37 @@
 
 <a name="introducción"></a>
 ## Introducción
-Se pretente implementar una interfaz que muestre el índice GINI. La capa superior recuperará la información del banco mundial https://api.worldbank.org/v2/en/country/all/indicator/SI.POV.GINI?format=json&date=2011:2020&per_page=32500&page=1&country=%22Argentina%22. Se utiliza API Rest y Python. Los datos de consulta son entregados a un programa en C (capa intermedia) que convierte valores de float a enteros y devuelve el índice de un país como Argentina y otro. Luego el programa python muestra los datos obtenidos.
+Se pretente implementar una interfaz que muestre el índice GINI. La capa superior recuperará la información del banco mundial https://api.worldbank.org/v2/en/country/all/indicator/SI.POV.GINI?format=json&date=2011:2020&per_page=32500&page=1&country=%22Argentina%22. Se utiliza API Rest y Python. Los datos de consulta son entregados a un programa en C (capa intermedia) para procesarlos en finalmente en assembler que convierte valores de float a enteros y devuelve el índice de un país como Argentina y otro. Luego el script python muestra los datos obtenidos. Para interfacear los distintos bloques de código debimos tener en cuenta la convención de llamadas.
+El código fuente comentado se puede consultar en el directorio "Source Code".
 
 <a name="implementación"></a>
 ## Implementación
- 1. Creamos la librería en C que utilizaremos para convertir de float a int:
-- creamos el fichero convertirFloatAEntero.c. En una primera instancia utilizamos Google Colab (acá explica cómo usar C en Google Colab https://www.youtube.com/watch?v=zuKeHPZWMYE)
-```python
-#Creamos librería C
-%%writefile convertirFloatAEntero.c
-int convertirFloatAEntero(float numeroFloat) {
-  int numeroEntero = (int)numeroFloat; // Convertir el número float a un entero
-  return numeroEntero;
-}
-```
--	parámetros:
-	-	recibe un valor float
-	-	devuelve el número entero equivalente
-```python
-#compilamos
-!gcc -c -fPIC convertirFloatAEntero.c -o convertirFloatAEntero.o
-!gcc -shared -W -o libconvertirFloatAEntero.so ./convertirFloatAEntero.o
-```
-- Compilamos el fichero en C con gcc que es el compilador de C de GNU 
-	- -c le dice a gcc que solo compile el archivo fuente y no lo enlace. 
-	- -fPIC le dice a gcc que genere código posicion-independiente, lo que es necesario para crear bibliotecas compartidas.
-- Creamos la biblioteca compartida libconvertirFloatAEntero.so a partir del archivo objeto convertirFloatAEntero.o: 
-	- *-shared*: indica a gcc que debe generar una biblioteca compartida en lugar de un ejecutable. 
-	- *-W*: opción de compilación que habilita advertencias 
-	- *-o* especifica el nombre del archivo de salida 
-	- *convertirFloatAEntero.o*: Es el archivo objeto que se está compilando y enlazando en la biblioteca compartida.
 
-2. Creamos un wrapper con ctypes para poder usar la librería de C con Python y poder llamar sus funciones:
+0. Para poder ejecutar correctamente el código necesitamos migrar a python 32 bits, acorde al interfaceo entre las estructuras C y ASM. Para poder hacer esto se utilizó el recurso "Conda", el cual nos permitió modificar la versión de python.
+Conda es una herramienta de línea de comandos para la gestión de paquetes y entornos que se ejecuta en Windows, macOS y Linux.
+   
+1. Compilamos el código ASM en un objeto de código objeto:
+```python
+ !nasm -f -elf32 convertirFloatAEntero.asm -o convertirFloatAEntero.o  
+```
+
+2. Compilamos el código en C en un objeto de código objeto:
+```python
+!gcc -m32 -c convertirFloatAEntero.c -o convertirFloatAEntero_c.o
+```
+
+3. Enlazamos los objetos de código objeto en una biblioteca compartida
+```python
+!gcc -m32 -shared convertirFloatAEntero.o convertirFloatAEntero_c.o -o libconvertirFloatAEntero.so
+```
+
+4. Ejecutamos el script Python
+```python
+python3 practico_2_calculadora_de_indices_gini_2_paises.py
+```
+Detalles del script Python:
+
+Creamos un wrapper con ctypes para poder usar la librería de C con Python y poder llamar sus funciones:
 ```python
 # Importamos la librería ctypes
 import ctypes
@@ -60,7 +59,7 @@ def  convertirFloatAEntero(num):
 return libconvertirFloatAEntero.convertirFloatAEntero(num)
 ```
 
-3. Se consultan los datos del índice GINI de Argentina en la siguiente api rest https://api.worldbank.org/v2/en/country/all/indicator/SI.POV.GINI? Se usa la requests library para mandar una GET request a la API y obtener el JSON response. Todo esto lo realizamos definiendo la función:
+1. Se consultan los datos del índice GINI de Argentina en la siguiente api rest https://api.worldbank.org/v2/en/country/all/indicator/SI.POV.GINI? Se usa la requests library para mandar una GET request a la API y obtener el JSON response. Todo esto lo realizamos definiendo la función:
 
 ```python
 def  obtener_indice_gini(pais)
@@ -84,4 +83,4 @@ def  obtener_indice_gini(pais)
 - Se podrían agregar más países
 - Se podría realizar una interfaz gráfica para seleccionar los países
 - Se podría optimizar el código
-- Se puede utilizar convención de llamadas para realizar tareas en Ensamblador
+
