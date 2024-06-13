@@ -95,7 +95,7 @@ int main() {
  ```
 
 <!-- Imágenes de la carpeta capturas -->
-![captura 2](capturas/2.png)
+![captura 2](debugimages/2.png)
 
 ### Análisis de Instrucciones en Ensamblador
 
@@ -118,18 +118,18 @@ Vamos a analizar cada instrucción desde el breakpoint en `0x565561c3` hasta la 
 5. **0x565561d1: mov %eax, -0xc(%ebp)**
    - **Descripción:** Mueve el valor del registro `eax` a la dirección `-0xc(ebp)`. Generalmente, después de una llamada a función, el valor de retorno se encuentra en `eax`. Esta instrucción almacena el valor de retorno de `float2int` en una variable local en el marco de pila actual. En este caso, `eax` nos devuelve el valor del número convertido a entero
 
-![captura 3](capturas/3.png)
+![captura 3](debugimages/3.png)
 
 Se verifica que el dato a convertir sea el deseado
 
-![captura 4](capturas/4.png)
+![captura 4](debugimages/4.png)
 
 Al retomar al main se observa la restauración del esp, mostrando que no se ha perdido la referencia del programa principal. 
 
-![captura 6](capturas/6.png)
+![captura 6](debugimages/6.png)
 
 Se observa que `float2int` ha realizado la conversión cargando correctamente la variable `num_int`
 
-![captura 7](capturas/7.png)
+![captura 7](debugimages/7.png)
 
 Se verifica el print.
