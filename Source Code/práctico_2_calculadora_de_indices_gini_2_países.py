@@ -25,7 +25,7 @@ Original file is located at
 
 import requests
 import json
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import datetime
 
 """
@@ -93,6 +93,7 @@ if __name__ == "__main__":
     indices_gini_otro = obtener_indice_gini(pais_dos)
     if indices_gini_argentina is not None:
         # Graficar los valores del índice GINI
+        '''
         plt.figure(figsize=(10, 6))
         plt.plot(indices_gini_argentina[0], indices_gini_argentina[1], marker='o', label=pais_uno) #0 dates 1 values
         plt.plot(indices_gini_otro[0], indices_gini_otro[1], marker='x', label=pais_dos) #0 dates 1 values
@@ -102,6 +103,7 @@ if __name__ == "__main__":
         plt.grid(True)
         plt.legend()
         plt.show()
+        '''
 
         # Convert values to integers with C de argentina
         values_int_arg = []
@@ -119,6 +121,7 @@ if __name__ == "__main__":
           else: values_int_otro.append(None)
 
         # Graficar los valores del índice GINI con enteros
+        '''
         plt.figure(figsize=(10, 6))
         plt.plot(indices_gini_argentina[0], values_int_arg, marker='o', label=pais_uno) #0 dates 1 values
         plt.plot(indices_gini_otro[0], values_int_otro, marker='x', label=pais_dos) #0 dates 1 values
@@ -128,3 +131,4 @@ if __name__ == "__main__":
         plt.grid(True)
         plt.legend()
         plt.show()
+        '''
