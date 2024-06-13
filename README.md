@@ -5,13 +5,12 @@
 * GONZALEZ, BRUNO		43134492	I.Electrónica	fork  
 * GARCÍA, ANGEL DOMINGO		32797989	I.Comp.		https://github.com/domingolu/Practico-2
 
-## Table of Contents
-	- [Introducción](#introducción)
-	- [Implementación](#implementación)
-	- [Results](#results)
-	- [Debug](#debug)
-	- [Future Work](#future-work)
-
+## Contenido
+	- Introducción
+	- Implementación
+	- Results
+	- Debug
+	- 
 <a name="introducción"></a>
 ## Introducción
 Se pretente implementar una interfaz que muestre el índice GINI. La capa superior recuperará la información del banco mundial https://api.worldbank.org/v2/en/country/all/indicator/SI.POV.GINI?format=json&date=2011:2020&per_page=32500&page=1&country=%22Argentina%22. Se utiliza API Rest y Python. Los datos de consulta son entregados a un programa en C (capa intermedia) para procesarlos en finalmente en assembler que convierte valores de float a enteros y devuelve el índice de un país como Argentina y otro. Luego el script python muestra los datos obtenidos. Para interfacear los distintos bloques de código debimos tener en cuenta la convención de llamadas.
