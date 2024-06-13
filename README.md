@@ -6,10 +6,11 @@
 * GARCÍA, ANGEL DOMINGO		32797989	I.Comp.		https://github.com/domingolu/Practico-2
 
 ## Table of Contents
-- [Introducción](#introducción)
-- [Implementación](#implementación)
-- [Results](#results)
-- [Future Work](#future-work)
+	- [Introducción](#introducción)
+	- [Implementación](#implementación)
+	- [Results](#results)
+	- [Debug](#debug)
+	- [Future Work](#future-work)
 
 <a name="introducción"></a>
 ## Introducción
@@ -78,9 +79,58 @@ def  obtener_indice_gini(pais)
 ![Ejemplo de gráfico para los países Argentina y Bolivia](graphs.png)
 ![Ejemplo de gráfico para los países Argentina y Bolivia con valores Int](graphs_int.png)
 
-<a name="future-work"></a>
-## Future Work
-- Se podrían agregar más países
-- Se podría realizar una interfaz gráfica para seleccionar los países
-- Se podría optimizar el código
 
+## Debug
+
+A partir de "testbench.c" hacemos una llamada a la función en Assmebler y realizamos el debug en gdb para comprobar que se cumplan las convenciones de llamadas en la interfaz entre el código escrito en c y el código escrito en asm.
+Como define como parámetro el número 10.29 y se verifica que la función "float2int" lo convierta en entero.
+
+```c
+// Contenido de testbench.c
+int main() {
+    float num = 10.29;
+    int num_int = float2int(num);
+    printf("Resultado de la conversión: %f is %d\n", num, num_int);
+    return 0;
+}
+ ```
+
+<!-- Imágenes de la carpeta capturas -->
+![Captura 1](capturas/2.png)
+
+### Análisis de Instrucciones en Ensamblador
+
+Vamos a analizar cada instrucción desde el breakpoint en `0x565561c3` hasta la línea `0x565561d4`.
+
+### Descripción de Instrucciones
+
+1. **0x565561c3: sub $0xc, %esp**
+   - **Descripción:** Resta 12 (0xc en hexadecimal) al registro de pila `esp`, lo que crea un espacio en la pila para las variables locales o para pasar argumentos a una función.
+
+2. **0x565561c6: push -0x10(%ebp)**
+   - **Descripción:** Empuja (push) el valor en la dirección `ebp` a la pila.  Coloca el argumento de la función `float2int` en la pila.
+
+3. **0x565561c9: call 0x56556020 <float2int>**
+   - **Descripción:** Llama a la función en la dirección `0x56556020`, la cual es nuestro código en .asm `float2int`. Esta instrucción guarda la dirección de retorno (la siguiente instrucción, `0x565561ce`) en la pila y salta a la dirección de la función `float2int`.
+
+4. **0x565561ce: add $0x10, %esp**
+   - **Descripción:** Suma 16 (0x10 en hexadecimal) al registro de pila `esp`, lo que limpia la pila eliminando los argumentos pasados a la función `float2int`.
+
+5. **0x565561d1: mov %eax, -0xc(%ebp)**
+   - **Descripción:** Mueve el valor del registro `eax` a la dirección `-0xc(ebp)`. Generalmente, después de una llamada a función, el valor de retorno se encuentra en `eax`. Esta instrucción almacena el valor de retorno de `float2int` en una variable local en el marco de pila actual. En este caso, `eax` nos devuelve el valor del número convertido a entero
+
+![Captura 3](capturas/3.png)
+
+Se verifica que el dato a convertir sea el deseado
+
+![Captura 1](capturas/4.png)
+
+Al retomar al main se observa la restauración del esp, mostrando que no se ha perdido la referencia del programa principal. 
+
+![Captura 3](capturas/6.png)
+
+Se observa que `float2int` ha realizado la conversión cargando correctamente la variable `num_int`
+
+![Captura 1](capturas/7.png)
+
+Se verifica el print.
